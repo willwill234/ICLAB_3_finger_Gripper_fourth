@@ -1,6 +1,6 @@
 #include "ros/ros.h" 
 #include "comm_stm32/gripper_cmd.h"
-#include "comm_stm32/grippercmd.h" 
+#include "comm_stm32/gripper_cmd.h" 
 #include <serial/serial.h>
 #include <std_msgs/UInt8.h>
 #include <std_msgs/String.h>
@@ -12,7 +12,6 @@ unsigned char r_buffer[rBUFFERSIZE];//receive buffer
 
 bool send_cmd(unsigned char number)
 { 
-    // std::cout<<"HHHHHHHHHHHHHHHHHHHHHHHHH"<<std::endl;
     memset(s_buffer, 0, sizeof(s_buffer));
     s_buffer[0] = number;
     ser.write(s_buffer, sBUFFERSIZE);
@@ -36,13 +35,11 @@ bool service_request(comm_stm32::gripper_cmd::Request  &req, comm_stm32::gripper
     return res.success; 
 } 
 
-void send_gripper_cmd(const comm_stm32::grippercmd& msg) 
+bool send_gripper_cmd(const comm_stm32::3f_gripper_cmd& msg) 
 { 
     // ROS_INFO("Request cmd = %d",req.val); 
-    std::cout<<"send_gripper_cmd==="<<std::endl;
     send_cmd(msg.val); 
-    std::cout<<"send_gripper_cmd..."<<std::endl;
-    //return true; 
+    return true; 
 } 
 
 
@@ -54,12 +51,11 @@ int main(int argc, char **argv)
     ros::Publisher pub_receieve_data = n.advertise <std_msgs::UInt8>("/receieve_data", 1000) ;
     std_msgs::UInt8 receieve_data;
 
-    ros::Subscriber sub = n.subscribe("/grippercmd", 1, &send_gripper_cmd);
-    // ros::Subscriber sub = n.subscribe("turtle1/pose", 1000, &Get_PoseMsg);
+    ros::Subscribe sub = n.subscribe("3f_gripper_cmd", 1000, send_gripper_cmd) ;
     // ros::ServiceServer service = n.advertiseService("gripper_service", service_request); 
     // ROS_INFO("The stm Service is Ready."); 
 
-    // ros::spin();  
+    ros::spin();  
 
     
     // Init Port
@@ -93,7 +89,7 @@ int main(int argc, char **argv)
     }
     
     
-    ros::Rate loop_rate(100);
+    ros::Rate loop_rate(10);
     while(ros::ok())
     {
         ros::spinOnce();
@@ -116,8 +112,6 @@ int main(int argc, char **argv)
         }
 		loop_rate.sleep();
     }
-
-    ros::spin();
     return 0; 
 } 
 

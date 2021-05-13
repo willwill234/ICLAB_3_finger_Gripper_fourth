@@ -6,7 +6,17 @@
 
   <param name ="manipulator_ip_address" value="$(arg manipulator_ip)"/>
 
+
+  <node name="stm_server" pkg="comm_stm32" type="send_stm_server" >
+  </node>
+
+  <node name="hand_eye_trans" pkg="hand_eye" type="hand_eye_trans.py" >
+  </node>
+
   <node name="$(arg manipulator_name)_hiwin_robot_driver" pkg="beginner_mission" type="pick_and_palce.py"
         args="--robot_ip $(arg manipulator_ip) --robot_name $(arg manipulator_name) --log_level $(arg log_level) --control_mode $(arg control_mode)" output="screen">
   </node>
+
+
+
 </launch>

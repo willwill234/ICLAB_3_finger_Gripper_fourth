@@ -343,6 +343,7 @@ class HiwinRobotInterface(object):
         #Current_Pos = float(Current_Pos)
         value = [float(value) for value in (Current_Pos)]
         value[0:3] = [ele/10 for ele in value[0:3]]
+        #print(value)
         return value
 
 #------set system variable
